@@ -7,7 +7,11 @@ Console.WriteLine("Hello, World!");
 const int NUMBER_OF_INPUTS = 2;
 const int NUMBER_OF_HIDDEN_NEURONS = 2; // this is assuming just a single hidden layer
 const int NUMBER_OF_OUTPUTS = 1;
-const int NUMBER_OF_TRAINING_VECTORS = 100;
+const int NUMBER_OF_TRAINING_VECTORS = 1000;
+
+var learningRate = 0.5;
+var numberOfEpochs = 5000;
+
 
 void Shuffle<T>(Random rng, T[] array) {
     var n = array.Length;
@@ -33,7 +37,6 @@ double initialWeight() {
     return new Random().NextDouble();
 }
 
-var learningRate = 0.1;
 
 var hiddenLayer = new double[NUMBER_OF_HIDDEN_NEURONS];
 var outputLayer = new double[NUMBER_OF_OUTPUTS];
@@ -70,7 +73,6 @@ for (var i = 0; i < NUMBER_OF_OUTPUTS; i++)
 var orderOfTrainingInputs = new int[NUMBER_OF_TRAINING_VECTORS];
 for (var i = 0; i < NUMBER_OF_TRAINING_VECTORS; i++) orderOfTrainingInputs[i] = i;
 
-var numberOfEpochs = 10_000;
 // Train the neural network for a number of epochs
 for (var epoch = 0; epoch < numberOfEpochs; epoch++) {
     // training loop
