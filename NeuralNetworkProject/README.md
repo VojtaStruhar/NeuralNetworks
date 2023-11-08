@@ -1,4 +1,4 @@
-put your UČOs (and names) on this line (no exact format required)
+492764 Vojtěch Struhár
 ## PV021 project -- Deep Learning from Scratch
 
 ### DEADLINE
@@ -133,7 +133,7 @@ are four data files included:
 ### FAQ
 **Q:** Can I write in Python, please, please, pretty please?  
 **A:** No. It's too slow without matrix libraries.
- 
+
 **Q:** Can I implement a convolutional neural network instead of the 
     feed-forward neural network?  
 **A:** Yes, but it might be harder.
