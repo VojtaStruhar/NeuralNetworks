@@ -5,9 +5,9 @@ using NeuralNetworkProject;
 Console.WriteLine("Hello, World!");
 
 const int NUMBER_OF_INPUTS = 2;
-const int NUMBER_OF_HIDDEN_NEURONS = 2; // this is assuming just a single hidden layer
+const int NUMBER_OF_HIDDEN_NEURONS = 3; // this is assuming just a single hidden layer
 const int NUMBER_OF_OUTPUTS = 1;
-const int NUMBER_OF_TRAINING_VECTORS = 1000;
+const int NUMBER_OF_TRAINING_VECTORS = 100;
 
 var learningRate = 0.5;
 var numberOfEpochs = 5000;
@@ -219,7 +219,8 @@ void TestNeuralNetwork() {
         }
 
         var errorPercentage = (int)(double.Abs(outputLayer[0] - correctOutputs[i]) * 100);
-        Console.WriteLine("Output: " + outputLayer[0] +
+        Console.WriteLine("In: " + testInputs[i, 0] + "," + testInputs[i, 1] +
+                          "\t| Output: " + outputLayer[0] +
                           "\t| Expected: " + correctOutputs[i] +
                           "\t| Error: " + +errorPercentage + "%");
     }
