@@ -4,6 +4,19 @@ using NeuralNetworkProject;
 
 Console.WriteLine("Hello, World!");
 
+var network = new Network();
+
+network.AddLayer(2);
+network.AddLayer(3);
+network.AddLayer(1);
+
+network.PrintState();
+
+network.Train(new[] { 1.0, 1.0 }, new[] { 0.0 });
+
+network.PrintState();
+return;
+
 const int NUMBER_OF_INPUTS = 2;
 const int NUMBER_OF_HIDDEN_NEURONS = 3; // this is assuming just a single hidden layer
 const int NUMBER_OF_OUTPUTS = 1;
@@ -49,6 +62,7 @@ var outputWeights = new double[NUMBER_OF_HIDDEN_NEURONS, NUMBER_OF_OUTPUTS];
 
 var trainingInputs = new double[NUMBER_OF_TRAINING_VECTORS, NUMBER_OF_INPUTS];
 var trainingOutputs = new double[NUMBER_OF_TRAINING_VECTORS, NUMBER_OF_OUTPUTS];
+
 var r = new Random();
 for (var i = 0; i < NUMBER_OF_TRAINING_VECTORS; i++) {
     var a = r.Next() % 2;
@@ -114,7 +128,7 @@ for (var epoch = 0; epoch < numberOfEpochs; epoch++) {
 
         // Backpropagation
 
-        // Copmute the change in output weights
+        // Compute the change in output weights
         var outputWeightDeltas = new double[NUMBER_OF_OUTPUTS];
         for (var j = 0; j < NUMBER_OF_OUTPUTS; j++) {
             var error = trainingOutputs[i, j] - outputLayer[j];
