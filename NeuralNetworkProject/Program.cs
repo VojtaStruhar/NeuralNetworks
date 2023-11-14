@@ -10,7 +10,6 @@ network.AddLayer(2);
 network.AddLayer(3);
 network.AddLayer(1);
 
-network.PrintState();
 
 network.Train(new[] { 1.0, 1.0 }, new[] { 0.0 });
 

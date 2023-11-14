@@ -56,12 +56,15 @@ public class Network
     }
 
     public void Train(double[] trainingInputs, double[] trainingOutputs) {
-        // forward pass
         {
             // assign the inputs into the input layer
             var inputLayer = GetNeuronLayer(0);
             for (var i = 0; i < inputLayer.Length; i++) inputLayer[i] = trainingInputs[i];
         }
+
+        /* ------------------------- *
+         *       FORWARD PASS        *
+         * ------------------------- */
 
         // compute hidden layer activation
         for (var layerIndex = 1; layerIndex < GetLayerCount(); layerIndex++) {
@@ -83,6 +86,65 @@ public class Network
                 GetNeuronLayer(layerIndex)[j] =
                     Sigmoid.Func(innerPotential);
             }
+        }
+
+        /* ------------------------- *
+         *      BACKPROPAGATION      *
+         * ------------------------- */
+
+
+        // Go from the back to the front
+        double[] previousDeltas;
+
+        {
+            // I need a starting point deltas - outputs
+            var outputLayer = GetNeuronLayer(-1);
+
+            var deltas = new double[outputLayer.Length];
+            for (var i = 0; i < deltas.Length; i++) {
+                var error = trainingOutputs[i] - outputLayer[i];
+                deltas[i] = error * Sigmoid.Derivative(outputLayer[i]);
+            }
+
+            // apply the changes of output weights
+            for (var i = 0; i < outputLayer.Length; i++) {
+                GetBiasLayer(-1)[i] += _learningRate * deltas[i];
+                var outputWeights = GetWeightLayer(-1);
+                var nextHiddlenLayer = GetNeuronLayer(-2);
+
+                for (var j = 0; j < nextHiddlenLayer.Length; j++)
+                    outputWeights[i, j] += _learningRate * deltas[i] * nextHiddlenLayer[j];
+            }
+
+            previousDeltas = deltas;
+        }
+
+        // Now compute the rest of the hidden layers
+        for (var layerIndex = GetLayerCount() - 2; layerIndex >= 1; layerIndex--) {
+            var currentNeurons = GetNeuronLayer(layerIndex);
+            var currentBiases = GetBiasLayer(layerIndex - 1);
+            var currentWeights = GetWeightLayer(layerIndex - 1);
+            var currentDeltas = new double[currentNeurons.Length];
+
+            var nextNeurons = GetNeuronLayer(layerIndex - 1);
+            var previousWeights = GetWeightLayer(layerIndex);
+
+            for (var i = 0; i < currentNeurons.Length; i++) {
+                var error = 0.0;
+                for (var j = 0; j < previousDeltas.Length; j++) error += previousDeltas[j] * previousWeights[j, i];
+
+                currentDeltas[i] = error * Sigmoid.Derivative(currentNeurons[i]);
+            }
+
+            // apply the weight changes
+            for (var i = 0; i < currentNeurons.Length; i++) {
+                currentBiases[i] = _learningRate * currentDeltas[i];
+
+                for (var j = 0; j < nextNeurons.Length; j++)
+                    currentWeights[i, j] += _learningRate * currentDeltas[i] * nextNeurons[j];
+            }
+
+            previousDeltas = currentDeltas;
         }
     }
 
