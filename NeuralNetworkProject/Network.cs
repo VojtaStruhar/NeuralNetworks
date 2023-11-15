@@ -6,11 +6,13 @@ public class Network
     private List<double[]> _neurons = new();
     private List<double[]> _biases = new();
     private List<double[,]> _weights = new();
+    private List<ActivationFunction> _activationFunctions = new();
 
     private double _learningRate = 0.5;
 
-    public void AddLayer(int newNeuronsCount) {
+    public void AddLayer(int newNeuronsCount, ActivationFunction activationFunction) {
         _neurons.Add(new double[newNeuronsCount]);
+        _activationFunctions.Add(activationFunction);
 
         if (GetLayerCount() > 1) {
             _biases.Add(new double[newNeuronsCount]);
@@ -68,8 +70,6 @@ public class Network
 
         // compute hidden layer activation
         for (var layerIndex = 1; layerIndex < GetLayerCount(); layerIndex++) {
-            // start with bias
-
             var currentNeurons = GetNeuronLayer(layerIndex);
             var currentBiases = GetBiasLayer(layerIndex - 1); // There is 1 layer of biases less than neurons
             var currentWeights = GetWeightLayer(layerIndex - 1);
@@ -83,7 +83,7 @@ public class Network
                     innerPotential += previousNeurons[k] * currentWeights[j, k];
 
 
-                currentNeurons[j] = Sigmoid.Func(innerPotential);
+                currentNeurons[j] = _activationFunctions[layerIndex].Func(innerPotential);
             }
         }
 
@@ -102,7 +102,7 @@ public class Network
             var deltas = new double[outputLayer.Length];
             for (var i = 0; i < deltas.Length; i++) {
                 var error = trainingOutputs[i] - outputLayer[i];
-                deltas[i] = error * Sigmoid.Derivative(outputLayer[i]);
+                deltas[i] = error * _activationFunctions[^1].Derivative(outputLayer[i]);
             }
 
             // apply the changes of output weights
@@ -132,7 +132,7 @@ public class Network
                 var error = 0.0;
                 for (var j = 0; j < previousDeltas.Length; j++) error += previousDeltas[j] * previousWeights[j, i];
 
-                currentDeltas[i] = error * Sigmoid.Derivative(currentNeurons[i]);
+                currentDeltas[i] = error * _activationFunctions[layerIndex].Derivative(currentNeurons[i]);
             }
 
             // apply the weight changes
@@ -171,8 +171,7 @@ public class Network
                     innerPotential += previousNeurons[k] * currentWeights[j, k];
 
 
-                GetNeuronLayer(layerIndex)[j] =
-                    Sigmoid.Func(innerPotential);
+                GetNeuronLayer(layerIndex)[j] = _activationFunctions[layerIndex].Func(innerPotential);
             }
         }
 

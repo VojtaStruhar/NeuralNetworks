@@ -23,10 +23,9 @@ for (var i = 0; i < NUMBER_OF_TRAINING_VECTORS; i++) {
 
 var network = new Network();
 
-network.AddLayer(NUMBER_OF_INPUTS);
-network.AddLayer(4);
-network.AddLayer(4);
-network.AddLayer(NUMBER_OF_OUTPUTS);
+network.AddLayer(NUMBER_OF_INPUTS, ActivationFunction.Sigmoid);
+network.AddLayer(4, ActivationFunction.Sigmoid);
+network.AddLayer(NUMBER_OF_OUTPUTS, ActivationFunction.Sigmoid);
 
 
 var trainingInputsOrder = new int[NUMBER_OF_TRAINING_VECTORS];
@@ -60,5 +59,3 @@ for (var i = 0; i < testInputs.Length; i++) {
                       "\t| Expected: " + correctOutputs[i] +
                       "\t| Error: " + +errorPercentage + "%");
 }
-
-return;
