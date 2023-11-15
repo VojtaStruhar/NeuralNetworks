@@ -22,11 +22,6 @@ using NeuralNetworkProject;
 const int NUMBER_OF_INPUTS = 2;
 const int NUMBER_OF_OUTPUTS = 1;
 
-var r = new Random();
-
-var numberOfEpochs = 50;
-
-
 var trainingInputs = CsvUtils.ReadVectors("./data/xor_train_inputs.csv");
 var trainingOutputs = CsvUtils.ReadVectors("./data/xor_train_outputs.csv");
 
@@ -37,19 +32,7 @@ network.AddLayer(NUMBER_OF_INPUTS, ActivationFunction.Sigmoid);
 network.AddLayer(4, ActivationFunction.Sigmoid);
 network.AddLayer(NUMBER_OF_OUTPUTS, ActivationFunction.Sigmoid);
 
-
-var trainingInputsOrder = new int[trainingInputs.Length];
-for (var i = 0; i < trainingInputsOrder.Length; i++) trainingInputsOrder[i] = i;
-
-for (var i = 0; i < numberOfEpochs; i++) {
-    Utils.Shuffle(r, trainingInputsOrder);
-    for (var j = 0; j < trainingInputs.Length; j++) {
-        var trainingIndex = trainingInputsOrder[j];
-
-        network.Train(trainingInputs[trainingIndex], trainingOutputs[trainingIndex]);
-    }
-}
-
+network.TrainEpochs(trainingInputs, trainingOutputs, 10);
 
 network.PrintState();
 
@@ -57,7 +40,8 @@ Console.WriteLine("Testing the neural network...");
 var testInputs = CsvUtils.ReadVectors("./data/xor_test_inputs.csv");
 var correctOutputs = CsvUtils.ReadVectors("./data/xor_test_outputs.csv");
 
-for (var i = 0; i < testInputs.Length; i++) {
+
+for (var i = 0; i < Math.Min(testInputs.Length, 10); i++) {
     var networkOutput = network.Predict(testInputs[i]);
     var correctOutput = correctOutputs[i];
 
@@ -70,10 +54,9 @@ for (var i = 0; i < testInputs.Length; i++) {
 
 
     var errorPercentage = (int)(errorAverage * 100);
-    if (errorPercentage > 1)
-        Console.WriteLine("Test " + i +
-                          "\t| In: " + Utils.FormatArray(testInputs[i]) +
-                          "\t| Output: " + Utils.FormatArray(networkOutput) +
-                          "\t| Expected: " + Utils.FormatArray(correctOutputs[i]) +
-                          "\t| Error: " + +errorPercentage + "%");
+    Console.WriteLine("Test " + i +
+                      "\t| In: " + Utils.FormatArray(testInputs[i]) +
+                      "\t| Output: " + Utils.FormatArray(networkOutput) +
+                      "\t| Expected: " + Utils.FormatArray(correctOutputs[i]) +
+                      "\t| Error: " + +errorPercentage + "%");
 }

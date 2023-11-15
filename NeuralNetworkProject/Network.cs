@@ -67,6 +67,25 @@ public class Network
     }
 
 
+    public void TrainEpochs(double[][] trainingInputs, double[][] trainingOutputs, int numberOfEpochs) {
+        var trainingInputsOrder = new int[trainingInputs.Length];
+        for (var i = 0; i < trainingInputsOrder.Length; i++) trainingInputsOrder[i] = i;
+
+        for (var i = 0; i < numberOfEpochs; i++) {
+            Utils.Shuffle(_random, trainingInputsOrder);
+            for (var j = 0; j < trainingInputs.Length; j++) {
+                var trainingIndex = trainingInputsOrder[j];
+
+                Train(trainingInputs[trainingIndex], trainingOutputs[trainingIndex]);
+            }
+
+            if (i % (numberOfEpochs / 10) == 0)
+                Console.Write("Epoch " + i + "...\r");
+        }
+
+        Console.WriteLine("Trained " + numberOfEpochs + " epochs!");
+    }
+
     public void Train(double[] trainingInputs, double[] trainingOutputs) {
         {
             // assign the inputs into the input layer
