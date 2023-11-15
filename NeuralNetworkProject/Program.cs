@@ -3,7 +3,6 @@
 using NeuralNetworkProject;
 
 const int NUMBER_OF_INPUTS = 2;
-const int NUMBER_OF_HIDDEN_NEURONS = 3; // this is assuming just a single hidden layer
 const int NUMBER_OF_OUTPUTS = 1;
 const int NUMBER_OF_TRAINING_VECTORS = 100;
 
@@ -25,9 +24,10 @@ for (var i = 0; i < NUMBER_OF_TRAINING_VECTORS; i++) {
 
 var network = new Network();
 
-network.AddLayer(2);
-network.AddLayer(3);
-network.AddLayer(1);
+network.AddLayer(NUMBER_OF_INPUTS);
+network.AddLayer(4);
+network.AddLayer(4);
+network.AddLayer(NUMBER_OF_OUTPUTS);
 
 
 var trainingInputsOrder = new int[NUMBER_OF_TRAINING_VECTORS];

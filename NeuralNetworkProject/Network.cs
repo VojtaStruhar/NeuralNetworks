@@ -12,19 +12,14 @@ public class Network
     public void AddLayer(int newNeuronsCount) {
         _neurons.Add(new double[newNeuronsCount]);
 
-        Console.WriteLine("Added " + newNeuronsCount + " neurons");
-
         if (GetLayerCount() > 1) {
             _biases.Add(new double[newNeuronsCount]);
-            Console.WriteLine("\tAdded " + newNeuronsCount + " biases");
 
             _weights.Add(new double[newNeuronsCount, GetNeuronLayer(-2).Length]);
 
             for (var i = 0; i < newNeuronsCount; i++)
             for (var j = 0; j < GetNeuronLayer(-2).Length; j++)
                 _weights[^1][i, j] = InitialWeight();
-
-            Console.WriteLine("\tAdded " + newNeuronsCount + "x" + GetNeuronLayer(-2).Length + " weights");
         }
     }
 
