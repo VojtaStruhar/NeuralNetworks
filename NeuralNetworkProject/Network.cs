@@ -139,7 +139,7 @@ public class Network
 
             // apply the weight changes
             for (var i = 0; i < currentNeurons.Length; i++) {
-                currentBiases[i] = _learningRate * currentDeltas[i];
+                currentBiases[i] += _learningRate * currentDeltas[i];
 
                 for (var j = 0; j < nextNeurons.Length; j++)
                     currentWeights[i, j] += _learningRate * currentDeltas[i] * nextNeurons[j];
