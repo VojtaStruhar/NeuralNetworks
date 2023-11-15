@@ -35,10 +35,12 @@ var correctOutputs = correctLabels.Select(label => Utils.OneHotEncode(label, 10)
 var correctPredictions = 0;
 
 for (var i = 0; i < testInputs.Length; i++) {
-    var networkOutput = network.Predict(testInputs[i]);
+    var inputs = testInputs[i];
+    var networkOutput = network.Predict(inputs);
     var correctOutput = correctOutputs[i];
 
-    if (correctLabels[i] == Utils.OneHotDecode(networkOutput)) correctPredictions++;
+    var guessedLabel = Utils.OneHotDecode(networkOutput);
+    if ((int)correctLabels[i] == guessedLabel) correctPredictions++;
 
     var errorAverage = 0.0;
     {
@@ -50,10 +52,13 @@ for (var i = 0; i < testInputs.Length; i++) {
 
     var errorPercentage = (int)(errorAverage * 100);
     Console.WriteLine("Test " + i +
-                      "\t| Output: " + Utils.FormatArray(networkOutput) +
-                      "\t| Expected: " + Utils.FormatArray(correctOutputs[i]) +
-                      "\t| Error: " + +errorPercentage + "%");
+                      "\t| Output: " + Utils.FormatArray(networkOutput, 4) +
+                      "\t| Error: " + +errorPercentage + "%" +
+                      "\t| Label: " + guessedLabel +
+                      "\t| Expected: " + correctLabels[i] +
+                      (guessedLabel == (int)correctLabels[i] ? " (yay)" : "")
+    );
 }
 
-Console.WriteLine("Got " + correctPredictions + " correct predictions right out of " + testInputs.Length +
+Console.WriteLine("\nGot " + correctPredictions + " correct predictions right out of " + testInputs.Length +
                   " tests. That's " + Math.Round(correctPredictions / (double)testInputs.Length * 100, 1) + "%");

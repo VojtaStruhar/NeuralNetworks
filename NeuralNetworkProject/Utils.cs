@@ -49,7 +49,7 @@ public static class Utils
                 formattedOutput.Append(", ");
         }
 
-        if (arr.Length > 16)
+        if (arr.Length > maxLength)
             formattedOutput.Append(", ...");
 
         formattedOutput.Append("]");

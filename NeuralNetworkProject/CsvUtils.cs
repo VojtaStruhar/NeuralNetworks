@@ -16,7 +16,7 @@ public static class CsvUtils
                 var values = line.Split(',');
                 var vector = new double[values.Length];
                 for (var j = 0; j < values.Length; j++)
-                    vector[j] = double.Parse(values[j]);
+                    vector[j] = double.Parse(values[j]) / 255.0; // Normalize the grayscale colors
 
                 result[i] = vector;
                 i++;
@@ -88,5 +88,14 @@ public static class CsvUtils
         }
 
         return result;
+    }
+
+    public static void Write(double[][] data, string path) {
+        using (var file = new StreamWriter(path)) {
+            foreach (var row in data) {
+                var line = string.Join(",", row);
+                file.WriteLine(line);
+            }
+        }
     }
 }

@@ -8,9 +8,10 @@ public class Network
     private List<double[,]> _weights = new();
     private List<ActivationFunction> _activationFunctions = new();
 
-    private double _learningRate = 0.5;
+    private double _learningRate = 0.2;
+    private double _initialWeightMultiplier = 1.0;
 
-    public void AddLayer(int newNeuronsCount, ActivationFunction activationFunction) {
+    public Network AddLayer(int newNeuronsCount, ActivationFunction activationFunction) {
         _neurons.Add(new double[newNeuronsCount]);
         _activationFunctions.Add(activationFunction);
 
@@ -23,25 +24,22 @@ public class Network
             for (var j = 0; j < GetNeuronLayer(-2).Length; j++)
                 _weights[^1][i, j] = InitialWeight();
         }
+
+        return this;
     }
 
-    public void SetLearningRate(double lr) {
+    public Network SetLearningRate(double lr) {
         _learningRate = lr;
+        return this;
+    }
+
+    public Network SetInitialWeightMultiplier(double multiplier) {
+        _initialWeightMultiplier = multiplier;
+        return this;
     }
 
     private int GetLayerCount() {
         return _neurons.Count;
-    }
-
-    private double[] GetOutputLayerSoftmax() {
-        var outputLayer = GetNeuronLayer(-1);
-        var expSum = 0.0;
-        for (var i = 0; i < outputLayer.Length; i++) expSum += Math.Exp(outputLayer[i]);
-
-        var result = new double[outputLayer.Length];
-        for (var i = 0; i < outputLayer.Length; i++) result[i] = Math.Exp(outputLayer[i]) / expSum;
-
-        return result;
     }
 
     private double[] GetNeuronLayer(int layer) {
@@ -63,7 +61,7 @@ public class Network
     private double InitialWeight() {
         // This returns a number in [0,1)
         // TODO: I probably want this smaller
-        return _random.NextDouble();
+        return _random.NextDouble() * _initialWeightMultiplier;
     }
 
 
@@ -212,35 +210,26 @@ public class Network
     }
 
     public void PrintState() {
-        Console.WriteLine("Neurons:");
         for (var i = 0; i < GetLayerCount(); i++) {
-            Console.Write("\tLayer " + i + ": ");
-            for (var j = 0; j < GetNeuronLayer(i).Length; j++) Console.Write(Math.Round(GetNeuronLayer(i)[j], 3) + " ");
+            Console.WriteLine("Neurons " + i + ": \t" + Utils.FormatArray(GetNeuronLayer(i), 16));
+            if (i > 0) Console.WriteLine("Biases for " + i + ":\t" + Utils.FormatArray(GetBiasLayer(i - 1), 16));
 
             Console.WriteLine();
         }
 
-        Console.WriteLine("Biases:");
-        for (var i = 0; i < GetLayerCount() - 1; i++) {
-            Console.Write("\tLayer " + i + ": ");
-            for (var j = 0; j < GetBiasLayer(i).Length; j++) Console.Write(Math.Round(GetBiasLayer(i)[j], 3) + " ");
-
-            Console.WriteLine();
-        }
-
-        Console.WriteLine("Weights:");
-        for (var i = 0; i < GetLayerCount() - 1; i++) {
-            Console.WriteLine("\tLayer " + i + ":");
-
-            for (var j = 0; j < GetWeightLayer(i).GetLength(0); j++) {
-                Console.Write("\t\t");
-                for (var k = 0; k < GetWeightLayer(i).GetLength(1); k++)
-                    Console.Write(Math.Round(GetWeightLayer(i)[j, k], 3) + " ");
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-        }
+        // Console.WriteLine("Weights:");
+        // for (var i = 0; i < GetLayerCount() - 1; i++) {
+        //     Console.WriteLine("\tLayer " + i + ":");
+        //
+        //     for (var j = 0; j < GetWeightLayer(i).GetLength(0); j++) {
+        //         Console.Write("\t\t");
+        //         for (var k = 0; k < GetWeightLayer(i).GetLength(1); k++)
+        //             Console.Write(Math.Round(GetWeightLayer(i)[j, k], 3) + " ");
+        //
+        //         Console.WriteLine();
+        //     }
+        //
+        //     Console.WriteLine();
+        // }
     }
 }
