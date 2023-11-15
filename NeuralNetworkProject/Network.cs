@@ -55,6 +55,7 @@ public class Network
         return _random.NextDouble();
     }
 
+
     public void Train(double[] trainingInputs, double[] trainingOutputs) {
         {
             // assign the inputs into the input layer
@@ -146,6 +147,42 @@ public class Network
 
             previousDeltas = currentDeltas;
         }
+    }
+
+    public double[] Predict(double[] inputs) {
+        {
+            // assign the inputs into the input layer
+            var inputLayer = GetNeuronLayer(0);
+            for (var i = 0; i < inputLayer.Length; i++) inputLayer[i] = inputs[i];
+        }
+
+        // compute hidden layer activation
+        for (var layerIndex = 1; layerIndex < GetLayerCount(); layerIndex++) {
+            // start with bias
+
+            var currentNeurons = GetNeuronLayer(layerIndex);
+            var currentBiases = GetBiasLayer(layerIndex - 1); // There is 1 layer of biases less than neurons
+            var currentWeights = GetWeightLayer(layerIndex - 1);
+            var previousNeurons = GetNeuronLayer(layerIndex - 1);
+
+            for (var j = 0; j < currentNeurons.Length; j++) {
+                var innerPotential = currentBiases[j];
+
+                // safe to do -1, because Im starting from 1
+                for (var k = 0; k < previousNeurons.Length; k++)
+                    innerPotential += previousNeurons[k] * currentWeights[j, k];
+
+
+                GetNeuronLayer(layerIndex)[j] =
+                    Sigmoid.Func(innerPotential);
+            }
+        }
+
+        var outputLayer = GetNeuronLayer(-1);
+        var output = new double[outputLayer.Length];
+        for (var i = 0; i < outputLayer.Length; i++) output[i] = outputLayer[i];
+
+        return output;
     }
 
     public void PrintState() {
