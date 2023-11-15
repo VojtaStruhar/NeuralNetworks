@@ -6,7 +6,6 @@ const int NUMBER_OF_INPUTS = 2;
 const int NUMBER_OF_OUTPUTS = 1;
 const int NUMBER_OF_TRAINING_VECTORS = 100;
 
-var learningRate = 0.5;
 var numberOfEpochs = 5000;
 
 
@@ -34,7 +33,7 @@ var trainingInputsOrder = new int[NUMBER_OF_TRAINING_VECTORS];
 for (var i = 0; i < trainingInputsOrder.Length; i++) trainingInputsOrder[i] = i;
 
 for (var i = 0; i < numberOfEpochs; i++) {
-    Shuffle(r, trainingInputsOrder);
+    Utils.Shuffle(r, trainingInputsOrder);
     for (var j = 0; j < trainingInputs.Length; j++) {
         var trainingIndex = trainingInputsOrder[j];
         network.Train(trainingInputs[trainingIndex], trainingOutputs[trainingIndex]);
@@ -63,14 +62,3 @@ for (var i = 0; i < testInputs.Length; i++) {
 }
 
 return;
-
-
-void Shuffle<T>(Random rng, T[] array) {
-    var n = array.Length;
-    while (n > 1) {
-        var k = rng.Next(n--);
-        var temp = array[n];
-        array[n] = array[k];
-        array[k] = temp;
-    }
-}

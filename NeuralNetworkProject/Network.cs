@@ -23,6 +23,10 @@ public class Network
         }
     }
 
+    public void SetLearningRate(double lr) {
+        _learningRate = lr;
+    }
+
     private int GetLayerCount() {
         return _neurons.Count;
     }
@@ -79,8 +83,7 @@ public class Network
                     innerPotential += previousNeurons[k] * currentWeights[j, k];
 
 
-                GetNeuronLayer(layerIndex)[j] =
-                    Sigmoid.Func(innerPotential);
+                currentNeurons[j] = Sigmoid.Func(innerPotential);
             }
         }
 

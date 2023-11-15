@@ -17,3 +17,17 @@ public static class Sigmoid
         return x * (1 - x);
     }
 }
+
+public static class ReLU
+{
+    // ReLU Function
+    public static double Func(double x) {
+        return Math.Max(0, x);
+    }
+
+    // Derivative of ReLU Function
+    public static double Derivative(double x) {
+        if (x > 0) return 1;
+        return 0;
+    }
+}
