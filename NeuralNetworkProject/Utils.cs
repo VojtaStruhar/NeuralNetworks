@@ -16,11 +16,14 @@ public static class Utils
 
     public static double[][] OneHotEncode(double[] arr, int numberOfClasses) {
         var result = new double[arr.Length][];
-        for (var i = 0; i < arr.Length; i++) {
-            result[i] = new double[numberOfClasses];
-            result[i][(int)arr[i]] = 1;
-        }
+        for (var i = 0; i < arr.Length; i++) result[i] = OneHotEncode(arr[i], numberOfClasses);
 
+        return result;
+    }
+
+    public static double[] OneHotEncode(double element, int numberOfClasses) {
+        var result = new double[numberOfClasses];
+        result[(int)element] = 1;
         return result;
     }
 
@@ -39,5 +42,15 @@ public static class Utils
 
         formattedOutput.Append("]");
         return formattedOutput.ToString();
+    }
+
+    public static double[] Softmax(double[] values) {
+        var expSum = 0.0;
+        for (var i = 0; i < values.Length; i++) expSum += Math.Exp(values[i]);
+
+        var result = new double[values.Length];
+        for (var i = 0; i < values.Length; i++) result[i] = Math.Exp(values[i]) / expSum;
+
+        return result;
     }
 }

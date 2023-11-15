@@ -4,10 +4,9 @@ using NeuralNetworkProject;
 
 Console.WriteLine("Reading the training data...");
 
-var trainingInputs = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv");
+var trainingInputs = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv", 1000);
 
-var labels = CsvUtils.ReadLabels("./data/fashion_mnist_train_labels.csv");
-var trainingOutputs = Utils.OneHotEncode(labels, 10);
+var trainingOutputs = CsvUtils.ReadLabels("./data/fashion_mnist_train_labels.csv", 10, 1000);
 
 
 const int NUMBER_OF_INPUTS = 28 * 28;
@@ -25,16 +24,16 @@ network.AddLayer(NUMBER_OF_OUTPUTS, ActivationFunction.Sigmoid);
 
 Console.WriteLine("Training...");
 
-network.TrainEpochs(trainingInputs.Take(100).ToArray(), trainingOutputs.Take(100).ToArray(), 10);
+network.TrainEpochs(trainingInputs, trainingOutputs, 10);
 
 
 Console.WriteLine("Testing the neural network...");
-var testInputs = CsvUtils.ReadColors("./data/fashion_mnist_test_vectors.csv");
-var correctOutputs = Utils.OneHotEncode(CsvUtils.ReadLabels("./data/fashion_mnist_test_labels.csv"), 10);
+var testInputs = CsvUtils.ReadColors("./data/fashion_mnist_test_vectors.csv", 10);
+var correctOutputs = CsvUtils.ReadLabels("./data/fashion_mnist_test_labels.csv", 10, 10);
 
 
-for (var i = 0; i < Math.Min(testInputs.Length, 10); i++) {
-    var networkOutput = network.Predict(testInputs[i]);
+for (var i = 0; i < testInputs.Length; i++) {
+    var networkOutput = Utils.Softmax(network.Predict(testInputs[i]));
     var correctOutput = correctOutputs[i];
 
     var errorAverage = 0.0;
