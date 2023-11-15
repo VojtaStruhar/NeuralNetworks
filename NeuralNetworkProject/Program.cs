@@ -4,9 +4,9 @@ using NeuralNetworkProject;
 
 Console.WriteLine("Reading the training data...");
 
-var trainingInputs = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv", 1000);
+var trainingInputs = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv", 100);
 
-var trainingOutputs = CsvUtils.ReadLabels("./data/fashion_mnist_train_labels.csv", 10, 1000);
+var trainingOutputs = CsvUtils.ReadAndEncodeLabels("./data/fashion_mnist_train_labels.csv", 10, 100);
 
 
 const int NUMBER_OF_INPUTS = 28 * 28;
@@ -28,13 +28,17 @@ network.TrainEpochs(trainingInputs, trainingOutputs, 10);
 
 
 Console.WriteLine("Testing the neural network...");
-var testInputs = CsvUtils.ReadColors("./data/fashion_mnist_test_vectors.csv", 10);
-var correctOutputs = CsvUtils.ReadLabels("./data/fashion_mnist_test_labels.csv", 10, 10);
+var testInputs = CsvUtils.ReadColors("./data/fashion_mnist_test_vectors.csv", 100);
+var correctLabels = CsvUtils.ReadLabels("./data/fashion_mnist_test_labels.csv", 100);
+var correctOutputs = correctLabels.Select(label => Utils.OneHotEncode(label, 10)).ToArray();
 
+var correctPredictions = 0;
 
 for (var i = 0; i < testInputs.Length; i++) {
-    var networkOutput = Utils.Softmax(network.Predict(testInputs[i]));
+    var networkOutput = network.Predict(testInputs[i]);
     var correctOutput = correctOutputs[i];
+
+    if (correctLabels[i] == Utils.OneHotDecode(networkOutput)) correctPredictions++;
 
     var errorAverage = 0.0;
     {
@@ -46,8 +50,10 @@ for (var i = 0; i < testInputs.Length; i++) {
 
     var errorPercentage = (int)(errorAverage * 100);
     Console.WriteLine("Test " + i +
-                      "\t| In: " + Utils.FormatArray(testInputs[i]) +
                       "\t| Output: " + Utils.FormatArray(networkOutput) +
                       "\t| Expected: " + Utils.FormatArray(correctOutputs[i]) +
                       "\t| Error: " + +errorPercentage + "%");
 }
+
+Console.WriteLine("Got " + correctPredictions + " correct predictions right out of " + testInputs.Length +
+                  " tests. That's " + Math.Round(correctPredictions / (double)testInputs.Length * 100, 1) + "%");

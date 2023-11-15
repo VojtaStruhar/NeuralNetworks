@@ -48,7 +48,7 @@ public static class CsvUtils
     }
 
 
-    public static double[][] ReadLabels(string path, int numberOfClasses, int maxCount) {
+    public static double[][] ReadAndEncodeLabels(string path, int numberOfClasses, int maxCount) {
         var result = new double[maxCount][];
         using (var reader = new StreamReader(path)) {
             string line;
@@ -60,6 +60,27 @@ public static class CsvUtils
                 }
 
                 result[i] = Utils.OneHotEncode(double.Parse(line), numberOfClasses);
+                i++;
+            }
+
+            if (i < maxCount) Console.WriteLine("Array underfilled - " + i + "/" + maxCount + " labels.");
+        }
+
+        return result;
+    }
+
+    public static double[] ReadLabels(string path, int maxCount) {
+        var result = new double[maxCount];
+        using (var reader = new StreamReader(path)) {
+            string line;
+            var i = 0;
+            while ((line = reader.ReadLine()) != null) {
+                if (i == maxCount) {
+                    Console.WriteLine("Ending before the end of the file - read " + i + " labels.");
+                    break;
+                }
+
+                result[i] = double.Parse(line);
                 i++;
             }
 

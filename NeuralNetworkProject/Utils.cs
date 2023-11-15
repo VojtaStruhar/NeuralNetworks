@@ -27,6 +27,18 @@ public static class Utils
         return result;
     }
 
+    public static int OneHotDecode(double[] vec) {
+        var maxVal = 0;
+        var maxIndex = 0;
+        for (var i = 0; i < vec.Length; i++)
+            if (vec[i] > maxVal) {
+                maxVal = (int)vec[i];
+                maxIndex = i;
+            }
+
+        return maxIndex;
+    }
+
     public static string FormatArray(double[] arr, int maxLength = 10) {
         var iterations = Math.Min(arr.Length, maxLength);
         var formattedOutput = new StringBuilder();

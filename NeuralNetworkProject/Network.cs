@@ -72,15 +72,15 @@ public class Network
         for (var i = 0; i < trainingInputsOrder.Length; i++) trainingInputsOrder[i] = i;
 
         for (var i = 0; i < numberOfEpochs; i++) {
+            if (i % (numberOfEpochs / 10) == 0)
+                Console.Write("Epoch " + i + "...\r");
+
             Utils.Shuffle(_random, trainingInputsOrder);
             for (var j = 0; j < trainingInputs.Length; j++) {
                 var trainingIndex = trainingInputsOrder[j];
 
                 Train(trainingInputs[trainingIndex], trainingOutputs[trainingIndex]);
             }
-
-            if (i % (numberOfEpochs / 10) == 0)
-                Console.Write("Epoch " + i + "...\r");
         }
 
         Console.WriteLine("Trained " + numberOfEpochs + " epochs!");
