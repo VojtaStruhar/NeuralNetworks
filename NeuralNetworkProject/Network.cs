@@ -33,6 +33,16 @@ public class Network
         return _neurons.Count;
     }
 
+    private double[] GetOutputLayerSoftmax() {
+        var outputLayer = GetNeuronLayer(-1);
+        var expSum = 0.0;
+        for (var i = 0; i < outputLayer.Length; i++) expSum += Math.Exp(outputLayer[i]);
+
+        var result = new double[outputLayer.Length];
+        for (var i = 0; i < outputLayer.Length; i++) result[i] = Math.Exp(outputLayer[i]) / expSum;
+
+        return result;
+    }
 
     private double[] GetNeuronLayer(int layer) {
         if (layer < 0) return _neurons[^Math.Abs(layer)];
