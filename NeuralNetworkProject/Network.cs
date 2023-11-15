@@ -60,8 +60,7 @@ public class Network
 
     private double InitialWeight() {
         // This returns a number in [0,1)
-        // TODO: I probably want this smaller
-        return _random.NextDouble() * _initialWeightMultiplier;
+        return (_random.NextDouble() * 2 - 1) * _initialWeightMultiplier;
     }
 
 
