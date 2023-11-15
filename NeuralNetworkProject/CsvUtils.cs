@@ -6,7 +6,7 @@ public static class CsvUtils
         var result = ReadVectors(path);
         for (var i = 0; i < result.Length; i++)
         for (var j = 0; j < result[i].Length; j++)
-            result[i][j] /= 255; // Normalize the colors to [0, 1]
+            result[i][j] /= 255.0; // Normalize the colors to [0, 1]
         return result;
     }
 

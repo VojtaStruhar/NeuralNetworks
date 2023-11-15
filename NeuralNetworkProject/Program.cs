@@ -1,44 +1,36 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Text;
 using NeuralNetworkProject;
 
-// var colors = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv");
-// Console.WriteLine("Colors: " + colors.Length + "x" + colors[0].Length);
-// for (var i = 0; i < 16; i++) Console.WriteLine(colors[14][i]);
-//
-// var numericLabels = CsvUtils.ReadLabels("./data/fashion_mnist_train_labels.csv");
-// Console.WriteLine("Labels: " + numericLabels.Length);
-//
-// var trainOutputs = Utils.OneHotEncode(numericLabels, 10);
-// for (var i = 0; i < 16; i++) {
-//     Console.Write(numericLabels[i] + " - ");
-//     for (var j = 0; j < trainOutputs[i].Length; j++) Console.Write(trainOutputs[i][j] + " ");
-//     Console.WriteLine();
-// }
-//
-// return;
+Console.WriteLine("Reading the training data...");
 
-const int NUMBER_OF_INPUTS = 2;
-const int NUMBER_OF_OUTPUTS = 1;
+var trainingInputs = CsvUtils.ReadColors("./data/fashion_mnist_train_vectors.csv");
 
-var trainingInputs = CsvUtils.ReadVectors("./data/xor_train_inputs.csv");
-var trainingOutputs = CsvUtils.ReadVectors("./data/xor_train_outputs.csv");
+var labels = CsvUtils.ReadLabels("./data/fashion_mnist_train_labels.csv");
+var trainingOutputs = Utils.OneHotEncode(labels, 10);
 
+
+const int NUMBER_OF_INPUTS = 28 * 28;
+const int NUMBER_OF_OUTPUTS = 10;
+
+Console.WriteLine("Creating the neural network...");
 
 var network = new Network();
 
 network.AddLayer(NUMBER_OF_INPUTS, ActivationFunction.Sigmoid);
-network.AddLayer(4, ActivationFunction.Sigmoid);
+network.AddLayer(64, ActivationFunction.Sigmoid);
+network.AddLayer(32, ActivationFunction.Sigmoid);
+network.AddLayer(16, ActivationFunction.Sigmoid);
 network.AddLayer(NUMBER_OF_OUTPUTS, ActivationFunction.Sigmoid);
 
-network.TrainEpochs(trainingInputs, trainingOutputs, 10);
+Console.WriteLine("Training...");
 
-network.PrintState();
+network.TrainEpochs(trainingInputs.Take(100).ToArray(), trainingOutputs.Take(100).ToArray(), 10);
+
 
 Console.WriteLine("Testing the neural network...");
-var testInputs = CsvUtils.ReadVectors("./data/xor_test_inputs.csv");
-var correctOutputs = CsvUtils.ReadVectors("./data/xor_test_outputs.csv");
+var testInputs = CsvUtils.ReadColors("./data/fashion_mnist_test_vectors.csv");
+var correctOutputs = Utils.OneHotEncode(CsvUtils.ReadLabels("./data/fashion_mnist_test_labels.csv"), 10);
 
 
 for (var i = 0; i < Math.Min(testInputs.Length, 10); i++) {

@@ -24,7 +24,7 @@ public static class Utils
         return result;
     }
 
-    public static string FormatArray(double[] arr, int maxLength = 16) {
+    public static string FormatArray(double[] arr, int maxLength = 10) {
         var iterations = Math.Min(arr.Length, maxLength);
         var formattedOutput = new StringBuilder();
         formattedOutput.Append("[");
